@@ -1,0 +1,35 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Knowles and Ghahramani}{Knowles and
+  Ghahramani}{2011}]{knowles11}
+Knowles, D. and Z.~Ghahramani (2011).
+\newblock Nonparametric {Bayesian} sparse factor models with application to
+  gene expression modeling.
+\newblock {\em Annals of Applied Statistics\/}~{\em 5}, 1534--1552.
+
+\bibitem[\protect\citeauthoryear{Liu, Rubin, and Wu}{Liu et~al.}{1998}]{liu98}
+Liu, C., D.~B. Rubin, and Y.~N. Wu (1998).
+\newblock Parameter expansion to accelerate {EM}: The {PX-EM} algorithm.
+\newblock {\em Biometrika\/}~{\em 85\/}(4), 755--770.
+
+\bibitem[\protect\citeauthoryear{Ohn and Kim}{Ohn and Kim}{2022}]{ohn22}
+Ohn, I. and Y.~Kim (2022).
+\newblock Posterior consistency of factor dimensionality in high-dimensional
+  sparse factor models.
+\newblock {\em Bayesian Analysis\/}~{\em 2\/}(17), 491--514.
+
+\bibitem[\protect\citeauthoryear{Ro\v{c}kov\'a and George}{Ro\v{c}kov\'a and
+  George}{2016}]{rockova16}
+Ro\v{c}kov\'a, V. and E.~I. George (2016).
+\newblock Fast {Bayesian} factor analysis via automatic rotations to sparsity.
+\newblock {\em Journal of the American Statistical Association\/}~{\em 111},
+  1608--1622.
+
+\bibitem[\protect\citeauthoryear{Tipping and Bishop}{Tipping and
+  Bishop}{1999}]{tipping99}
+Tipping, M.~E. and C.~M. Bishop (1999).
+\newblock Probabilistic principal component analysis.
+\newblock {\em Journal of the Royal Statistical Society. Series B\/}~{\em
+  61\/}(3), 611--622.
+
+\end{thebibliography}

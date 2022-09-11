@@ -1,0 +1,617 @@
+\documentclass[pdftex]{imsart}
+ 
+\usepackage[english]{babel}
+\usepackage{parskip}
+%\usepackage[a4paper]{geometry}
+\usepackage{amsmath,amsfonts,amsthm, amssymb}
+\usepackage{graphicx} 
+\usepackage{enumitem} 
+\usepackage{xcolor, latexsym} 
+\usepackage{subfigure} 
+\usepackage[pdftex, bookmarks=true, breaklinks, hypertexnames=false, pdfborder={0 0 0 0}]{hyperref} 
+\usepackage[normalem]{ulem} 
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{soul} %for highlighting\
+\usepackage{xcolor}
+\soulregister\cite7 %for allowing cites within highlight!
+\soulregister\ref7
+\soulregister\pageref7
+%\usepackage{amsthm,amsmath,natbib}
+%\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
+\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\evensidemargin}{-.5in}%
+\addtolength{\textwidth}{1in}%
+
+% provide arXiv number if available:
+%\arxiv{arXiv:0000.0000}
+
+% put your definitions there:
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\tSigma}{\tilde{\Sigma}}
+\DeclareMathOperator{\MF}{\text{MF}}
+\DeclareMathOperator{\eig}{\text{eig}}
+\DeclareMathOperator{\tB}{\tilde{B}}
+\DeclareMathOperator{\tw}{\tilde{w}}
+\DeclareMathOperator{\vc}{\text{Vec}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\bw}{\boldsymbol{w}}
+\DeclareMathOperator*{\bu}{\boldsymbol{u}}
+\DeclareMathOperator*{\bnu}{\boldsymbol{\nu}}
+\DeclareMathOperator*{\bmu}{\boldsymbol{\mu}}
+\DeclareMathOperator*{\bXi}{\boldsymbol{\Xi}}
+\DeclareMathOperator*{\bomega}{\boldsymbol{\omega}}
+\DeclareMathOperator*{\bgamma}{\boldsymbol{\gamma}}
+\DeclareMathOperator*{\bzeta}{\boldsymbol{\zeta}}
+\DeclareMathOperator*{\ELBO}{\text{ELBO}}
+\DeclareMathOperator*{\chol}{\text{Chol}}
+\DeclareMathOperator*{\diff}{\text{diff}}
+\DeclareMathOperator*{\bz}{\boldsymbol z}
+\DeclareMathOperator*{\KL}{\text{KL}}
+
+\newcommand{\psg}{{\langle}}
+\newcommand{\psd}{{\rangle}}
+\newcommand{\varf}[1]{\mathbf{Var}_{#1}}
+
+\newcommand{\bl}[1]{\textcolor[rgb]{0.00,0.00,1.00}{#1}}
+\newcommand{\re}[1]{{\color{red}{#1}}}
+\newcommand{\gr}[1]{{\color{green}{#1}}}
+\newcommand{\pur}[1]{{\color{purple}{#1}}}
+\newcommand{\gra}[1]{{\color{gray}{#1}}}
+\newcommand{\ma}[1]{{\color{magenta}{#1}}}
+\newcommand{\ora}[1]{\textcolor[rgb]{1.00,0.50,0.00}{#1}}
+
+
+\definecolor{blendedblue}{rgb}{0.2,0.2,0.7}
+\definecolor{darkpurple}{RGB}{49,0,94}
+\definecolor{darkgreen}{RGB}{11, 84, 37}
+
+
+\newcommand{\sbl}[1]{{\color{blendedblue}{#1}}}
+
+
+\newcommand{\comment}[1]{\sbl{[#1]}}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\zed}{\mathbb{Z}}
+
+\newcommand{\given}{\,|\,}
+
+\newcommand{\vp}{\vspace{.5cm}}
+
+\newcommand{\rn}{\sqrt{n}}
+\newcommand{\psin}{\psi_{b,L_n}} 
+\newcommand{\mh}{\mathbb{H}}
+
+\newcommand{\op}{o_{P_0}(1)}
+
+\allowdisplaybreaks
+  
+
+\theoremstyle{plain} 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{expl}{Example}
+ 
+
+%\numberwithin{equation}{section}
+
+\allowdisplaybreaks
+
+%\graphicspath{{./Figures/}} 
+\endlocaldefs
+\usepackage{natbib}
+\usepackage{multirow}
+\usepackage{chngpage}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage[T1]{fontenc}
+%\usepackage{subfig}
+\usepackage{float}
+\usepackage{grffile}
+\usepackage{url} 
+\usepackage{graphicx,psfrag,epsf}
+
+\usepackage{bbm, dsfont}
+\usepackage{mathrsfs} 
+\usepackage[ruled,vlined]{algorithm2e}
+\SetKwInput{KwInput}{Input}                % Set the Input
+\SetKwInput{KwOutput}{Output}
+%\usepackage{subcaption}
+
+\DeclareRobustCommand{\hlone}[1]{{\sethlcolor{cyan}\hl{#1}}}
+\DeclareRobustCommand{\hlae}[1]{{\sethlcolor{green}\hl{#1}}}
+\DeclareRobustCommand{\hlrev}[1]{{\sethlcolor{orange}\hl{#1}}}
+\DeclareRobustCommand{\hlr}[1]{{\sethlcolor{magenta}\hl{#1}}}
+\newcommand{\hll}[1]{\colorbox{magenta}{$\displaystyle #1$}}
+
+\usepackage{xr-hyper}
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Variational Bayes for nonparametric sparse factor analysis}
+
+
+\runtitle{Bayesian Sparse Factor Analysis}
+
+\author{\fnms{Bo Y.-C.} \snm{Ning}\ead[label=e1]{bycning@ucdavis.edu}}
+%\and
+%\author{\fnms{St\'ephanie} \snm{van der Pas}\thanksref{t2}\ead[label=e2]{SVDpas@math.leidenuniv.nl}}
+
+ 
+%\thankstext{t1}{The author gratefully acknowledges the funding support provided by NASA XRP 80NSSC18K0443.}
+ 
+\affiliation{UC Davis}
+
+\address{University of California, Davis \\ 
+ 4242 Mathematical Science Building\\
+ Department of Statistics\\
+ One Shield Avenue, Davis, CA 95618\\
+  \printead{e1}}
+
+
+\runauthor{Bo Y.-C. Ning}
+
+\begin{abstract}
+We study the mean-field variational Bayesian for sparse factor analysis with a sparsity is imposed through the spike-and-slab Indian Buffet Process (SS-IBP) prior. We propose a PXL-CAVI method using parameter expansion to compute the variational posterior. This method can achieve a faster convergence than the regular CAVI method without adopting the parameter expansion trick.
+We obtain sufficient conditions for the variational posterior to contract at the fast rate. Those conditions provide some guidance for choosing suitable values of hyperparameters in the prior in practice. Simulation studies are conducted to compare various methods under different settings. Our simulation results suggest an excellent performance in the finite sample setting. Finally, the method is applied to study a lung cancer dataset to identify important biological relevant genes.
+
+\end{abstract}
+
+
+\begin{keyword}[class=MSC]
+\kwd[Primary ]{62C10, 62H25, 62J07}
+\end{keyword}
+
+\begin{keyword}
+\kwd{Mean-field variational inference}
+\kwd{PXL-CAVI method}
+\kwd{Spike and slab prior}
+\kwd{Sparse factor analysis}
+\kwd{Sparse PCA}
+\end{keyword}
+
+\end{frontmatter}
+
+%\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%% Article %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\label{sec:intro}
+
+Consider the classical latent factor model 
+\begin{align}
+X_i = Z w_i + \epsilon_i, \
+w_i \stackrel{i.i.d}{\sim} \mathcal{N}(0, I_K), \
+\epsilon_i \stackrel{i.i.d}{\sim} \mathcal{N}(0, \Sigma), \ i = 1,\dots, n,
+\label{model}
+\end{align}
+where $X_i \in \mathbb{R}^p$ is the observed data,
+$Z \in \mathbb{R}^{p \times K}$ is the factor loading matrix,
+$K \in \mathbb{N}^+$ is the number of latent factors, $w_i \in \mathbb{R}^{K}$ and $\epsilon_i \in \mathbb{R}^{p}$ are mutually independent, and $\Sigma \in \mathbb{R}^p$ is a diagonal matrix $\text{diag}(\Sigma) = (\sigma_1^2, \dots, \sigma_p^2)$. By marginalizing out $w_i$, this model can be written as $X_i \stackrel{i.i.d}{\sim} \mathcal{N}(0, ZZ' + \Sigma)$.
+
+%The latent factor model has been widely adopted in factor analysis for finding correlation between hidden latent variables among multiple responses. 
+
+We study Model \eqref{model} under the high-dimensional setting $p > n > K$.
+Let $Z_{\cdot k} = (Z_{1k}, \dots, Z_{pk})'$ be the $k$-th column of $Z$, $k = 1, \dots, K$
+and $Z_{\cdot k}^\star$ be the `true' vector, we assume each $Z_{\cdot k}^\star \in \ell_0[s_k]$, where
+\begin{align}
+\label{l0}
+\ell_0[s] = \{\mathsf{z} \in \mathbb{R}^p, \# \{j \in \{1, \dots, p\}: |\mathsf{z}_j| > 0\} \leq s \ll p\}.
+\end{align}
+That is, each $Z_{\cdot k}^\star$ has at most $s_k$ nonzero coordinates. Denote $S_k$ as the support of $Z_{\cdot k}$, $S_k = \text{supp}(Z_{\cdot k})$, which is the set containing the indices of non-zero coordinates in $Z_{\cdot k}$. Then, $\text{supp}(Z) = S_1 \cup S_2 \cup \cdots \cup S_K$. 
+
+
+
+
+%Sparse principal component analysis (PCA)---a modern variant of the PCA---is a popular tool used for dimension reduction of high-dimensional data. For example, in chemistry, it is applied to identify a subset of important chemical components from spectra \citep{varmuza09}; in genetics, it is used to find a subset of important genes and pathways \citep{li17}; and in macroeconomics, it is employed to select dominant macro variables which earns a significant risk premium \citep{rapach19}.
+%Much of its success is due to two reasons. First, in a typical high-dimensional dataset, the number of input variables $p$ in the dataset is larger than the number of observations $n$. If using the conventional PCA, the leading eigenvector will be inconsistently estimated as long as $p/n$ does not converge to 0 \citep[see][]{paul07, johnstone09}. However, using sparse PCA can avoid (or at least can alleviate) this issue.
+%Second, principal components obtained from sparse PCA are linear combinations of only a few important variables, making them more interpretable in practice.
+%
+%To date, various sparse PCA algorithms have been proposed; rather than reviewing this large body of literature, we refer the readers to the recent review article by \citet{zou18}. 
+%Among those algorithms mentioned in this article, there is no Bayesian method. Despite a few Bayesian methods being proposed recently, there is still a lack of a method that is both computationally scalable and theoretically justifiable.
+%
+%Before introducing our method, let's review two recent works on Bayesian sparse PCA---\citet{gao15} and \citet{xie18}. Both adopted the spiked covariance model, which is convenient to work with because it can be viewed as a linear regression model---but its coefficient is the loadings matrix and the design matrix is random that follows the standard multivariate normal distribution.
+%The major challenge is to put a prior on the coefficients because of the orthogonality constraint (i.e.,  columns of the loadings matrix need to be mutually orthogonal), and this constraint needs be imposed through the prior.
+%\citet{gao15} constructed a prior through projecting the nonzero coordinates to the subspace that is spanned by a collection of mutually orthogonal unit vectors. However, their posterior is  intractable and difficult to compute as long as the rank is larger than one. \citet{xie18} used a different approach which first reparametrizes the likelihood by multiplying the loadings matrix with an orthogonal matrix to get rid of the orthogonal constraint. Then, they choose a prior which is similar to it used in the linear regression setting. However, since they changed the model to the sparse factor model, the analysis they conducted is in fact a sparse factor analysis, not sparse PCA.
+%
+%Although both sparse factor analysis and sparse PCA are widely used for dimensional reduction in practice, the primary focus of the two analyses is different. Sparse PCA is used for prediction and data reduction. It reduces the original data to linear combinations of a few important variables that are responsible for the larger variability of the data. On the other hand, the factor analysis is used for describing variabilities among correlated observable variables in terms of a few unobserved latent variables (also known as factors). Also, principal components obtained in sparse PCA must be mutually orthogonal, but factor loadings do not have this restriction. Last, there is a rich literature on Bayesian sparse factor analysis \citep[e.g.,][]{bhattacharya11, pati14, rockova16}, but only a few on Bayesian sparse PCA given that sparse PCA has been extensively studied in the frequentist literature. 
+%
+%We propose a new prior, which is placed on the coefficient of the spiked covariance model. We first put a regular spike and slab prior on the parameter, which is the product of the loadings matrix (the coefficient) and an orthogonal matrix. The orthogonal matrix is then a latent variable in the prior. We then obtain the prior of the coefficient, which is the marginal density derived from this joint density. 
+%The spike and slab prior is a mixture of a continuous density which its mass spreads over the parameter space of a coefficient and a Dirac measure at 0. By further putting an appropriate prior on the mixture weight, sparsity is then imposed on the coefficient. 
+%The spike and slab prior is one of the most popular priors for Bayesian high-dimensional analysis and has been extensively studied; some important works include \citet{johnstone04, rockova18a}; and \citet{cast20}. The subset selection prior, another popular prior, including the spike and slab prior as a special case, has also been studied by \citet{cast12, cast15, martin17, jeong20}; and \citet{ning20}. See the review paper on this topic by \citet{banerjee20}.
+%Note that although our prior uses the same spike and slab formulation, the slab density, which includes the latent variable, is different from it in linear regression models. 
+%
+%We compute the posterior by adopting a variational approach, which solves the posterior by minimizing a pre-chosen distance or divergence (e.g., the Kullback-Leibler divergence) between a prespecified probability measure---which belongs to a rich yet analytically tractable class of distributions--- and the posterior distribution. Since the variational approach is an optimization method, its computational speed is faster than those sampling methods (e.g., Markov chain Monte Carlo (MCMC) algorithm). Among different variational approaches, the most popular algorithm is the coordinate ascent variational inference (CAVI) method \citep[see the review paper on this topic by][]{blei17}. Recently, several CAVI methods have developed for the sparse linear regression model with the spike and slab prior (or the subset selection prior) \citep[e.g.,][]{carbonetto12, huang16, ray20, yang20}. Theoretical properties (e.g., the posterior contraction rate) of the variational posterior have been studied recently by \citet{ray20} and \citet{yang20}. In particular, the rate obtained by \citet{yang20} is of the same order as the optimal rate. Simulations showed that their method could have superior performance than their competitors, e.g., the EM algorithm. Variational Bayesian for sparse PCA has been developed by \citet{guan09} and \citet{bouveyron18}. However, they did not provide theoretical justification for their posterior. In fact, the priors used in \citet{guan09} include the Laplace distribution, and \citet{bouveyron18}'s prior is similar to the spike and slab prior with a fixed mixture weight; using those priors are known that do not yield the optimal (or near-optimal) posterior contraction rate. In this paper, we will show that the contraction rates of both the posterior and the variational posterior are almost optimal. To the best of our knowledge, this is the first result for the variational Bayesian method for sparse PCA.
+%
+%We also developed an EM algorithm for sparse PCA, in which the maximum of a posteriori estimator is obtained.
+%The EM algorithm for Bayesian variable selection has been studied by \citet{rockova14b} and \citet{rockova18a} for the sparse linear regression model. Similar algorithms have been developed for other high-dimensional models, such as the dynamic time series model \citep{ning19} and the sparse factor model \citep{rockova16}. The EM algorithm needs to replace the Dirac measure in the spike and slab prior with a continuous density with a large variable, which leads to the continuous spike and slab prior.
+%
+%The variational approach and the EM algorithm both apply parameter expansion to the likelihood function. Hence, the two algorithms are called the PX-CAVI and the PX-EM algorithm. The parameter expansion approach is first proposed by \citet{liu98}, which can accelerate the convergence speed of the EM algorithm. In addition to this benefit, we found that by choosing the expanded parameter as the orthogonal matrix,
+%one can avoid dealing with the orthogonal constraint of the loading matrix directly. That is, one can first solve the matrix that does not have any constraint and then apply the singular value decomposition (SVD)  to obtain an estimated value of the loadings matrix.
+%
+%The rest of the paper is organized as follows:
+%Section \ref{sec:model-and-priors} presents the model and the prior;
+%Section \ref{sec:VI} introduces the variational approach and develops the PX-CAVI algorithm; this algorithm assumes the loadings matrix is jointly row-sparse.
+%Section \ref{sec:postCR} studies the theoretical properties of the posterior and the variational posterior;
+%Section \ref{sec:EM} develops the PX-EM algorithm; 
+%simulation studies are conducted in \ref{sec:simstudy};
+%and Section \ref{sec:realstudy} analyzes a lung cancer gene dataset. 
+%In the appendix, we provide the proofs of the equations in Section \ref{sec:VI}. 
+%Proofs of the theorems in Section \ref{sec:postCR} and the batch PX-CAVI algorithm without using the jointly row-sparsity assumption can be found in the supplementary material. 
+%$\mathsf{R}$ package $\mathsf{VBsparsePCA}$ for both the PX-CAVI algorithm and the batch PX-CAVI algorithm is available on The comprehensive R archive network (CRAN).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The spike-and-slab Indian Buffet Process prior}
+\label{sec:model-and-priors}
+
+Let $Z_{jk}$ be the $(j,k)$-th coordinate in $Z$. We introduce a set of binary variables $(\gamma_{jk})$, $j = 1, \dots, p$, $k = 1, \dots, K$, each of which indicating whether $Z_{jk}$ is zero or non-zero. If $\gamma_{jk} = 1$, we model $Z_{jk}$ as a continuous density; if $\gamma_{jk} = 0$, we model $Z_{jk}$ using a Dirac measure concentrating at zero. This construction leads to the spike-and-slab prior given as follows:
+\begin{align}
+\label{prior-Z}
+p(Z_{jk} \given \gamma_{jk}, \lambda_k) = \gamma_{jk} \psi(Z_{jk} \given \lambda_k) + (1 - \gamma_{jk}) \delta_0,
+\end{align}
+where $\psi(Z_{jk} \given \lambda_k) = \frac{\lambda_k}{2} \exp\{- \lambda_k|Z_{jk}|\}$ is a Laplace density. 
+We further denote $\boldsymbol \gamma$ a $p \times K$ matrix whose $(j, k)$-th coordinate is $\gamma_{jk}$, then $\boldsymbol \gamma$ is a sparse binary matrix that has finite rows and possibly infinite columns (as $K \to \infty$). It is often expect that the number of non-zero factors is much smaller than $K$; hence, an ideal prior for $\bgamma$ should impose sparsity not only within each column but also on the number of active features (i.e., nonzero number of factor loadings). A popular prior is the Indian buffet process (IBP) prior
+introduced by \citet{knowles11} in the sparse factor analysis literature.
+The IBP prior is a hierarchical prior. It first puts an independent Bernoulli distribution with the success probability $\theta_k$ on each $\gamma_{jk}$, and then a Beta distribution on each $\theta_k$. 
+The explicit form of the IBP prior is given as follows:
+\begin{align}
+\label{ibp}
+\boldsymbol \gamma \given \theta_1, \dots, \theta_K \sim \prod_{j=1}^p \prod_{k=1}^K \theta_k^{\gamma_{jk}} (1-\theta_k)^{1-\gamma_{jk}},
+\quad 
+\theta_k \given \alpha \sim \text{Beta}(\alpha/K, 1).
+\end{align}
+Last, we put independent priors on $\sigma_j^2 \sim \text{IG}(a, b)$ for each $j =1, \dots, p$.
+
+When $\sigma_1 = \dots = \sigma_p = \sigma$ and $\langle Z_{\cdot k }, Z_{\cdot k'} \rangle = 0$, then the latent factor model becomes the probabilistic PCA proposed by \citet{tipping99}.
+
+%----------------------------------------------------------------%
+%------------- Computational algorithm -----------------%
+%----------------------------------------------------------------%
+
+\section{The mean-field variational posterior}
+
+(introducing the variational posterior, blablabla...)
+
+
+We consider the mean-field variational class as follows:
+\begin{equation}
+\begin{split}
+\label{vbclass}
+\mathcal{Q}^{\text{MF}} = 
+\Big\{
+& q(\Theta): 
+\prod_{j=1}^p \prod_{k = 1}^K
+\left[
+\zeta_{jk} \mathcal{N}(\mu_{jk}, v_{jk}^2) + 
+(1 - \zeta_{jk}) \delta_0
+\right], \mu_j \in \mathbb{R}, \\
+& v_{jk} \in \mathbb{R}^+,
+\zeta_{jk} \in [0, 1], j = 1, \dots, p, k = 1, \dots, K
+\Big\},
+\end{split}
+\end{equation}
+
+\section{Asymptotic properties of the variational posterior} 
+
+
+
+
+\section{Variational inference}
+
+
+\subsection{The evidence lower bound}
+
+For $q(\Theta) \in \mathcal{Q}^{MF}$, the variational posterior is obtained by minimizing the Kullback-Leibler (KL) divergence between all $q(\theta) \in \mathcal{Q}^{\text{MF}}$ and the posterior:
+\begin{align}
+\label{eqn:MF-posterior}
+    \hat q(\Theta) = \argmin_{q(\Theta) \in \mathcal{Q}^{\text{MF}}}
+    \KL\left(q(\Theta), \pi(\Theta|X^n)\right),
+\end{align}
+By plugging-in the KL divergence formula, 
+\eqref{eqn:MF-posterior} can be written as 
+\begin{align}
+    \hat q(\Theta) 
+    & = 
+    \argmin_{q(\Theta) \in \mathcal{Q}^{\text{MF}}}
+    \left(\mathbb{E}_q \log q(\Theta) - \mathbb{E}_q \log\pi(\Theta|X^n)\right) \nonumber \\
+    & =
+    \argmin_{q(\Theta) \in \mathcal{Q}^{\text{MF}}}
+    \left(
+        \mathbb{E}_q \log q(\Theta) - \mathbb{E}_q \log\pi(\Theta, X^n)
+        + \log \pi(X^n)
+    \right).
+    \label{eqn:VP-1}
+\end{align}
+Solving $\hat q(\Theta)$ in \eqref{eqn:VP-1} requires knowing the `evidence' part in the posterior, $\log \pi(X^n)$; however, its explicit expression is typically intractable. In practice, it is custom to drop this term and only focus on the first two terms; i.e., we solve
+\begin{align}
+\label{elbo}
+    \hat q(\Theta) = 
+     \argmax_{q(\Theta) \in \mathcal{Q}^{\text{MF}}}
+    \mathbb{E}_q \log\pi(\Theta, X^n) - \mathbb{E}_q \log q(\Theta).
+\end{align}
+The right hand side expression in \eqref{elbo} is called as the evidence lower bound (ELBO). One can quickly check that it is a lower bound of $\log \pi(X^n)$. 
+
+In view of our model and priors, the mean-field variational posterior $\hat q(\Theta)$ still cannot be solved directly from \eqref{elbo} as $\pi(\Theta, X^n)$ remains intractable because one needs to solve $\pi(\Theta, X^n) = \int \pi(\Theta, \bw, X^n) d\bw$ and marginalize out those hyperparameters $\bgamma$ and $\theta$ in the spike-and-slab IBP prior. Instead of directly solving $\hat q(\Theta)$, we will introduce a CAVI (coordinate ascent variational inference) algorithm to solve it in the next section.
+
+
+\subsection{The CAVI algorithm}
+\label{sec:CAVI}
+The CAVI algorithm an iterative method, which sequentially optimizes each of the unknown variable by conditioning on the rest. Our CAVI algorithm consists an expectation step and coordinate updating steps. In the expectation step, we handle latent variables $\bw = (w_1, \dots, w_n)$. In those coordinate updating steps, we update $q(Z)$, $\theta$, and $\sigma_j^2$. We now introduce each step in detail. 
+
+
+\subsubsection{The expectation step}  
+From the latent factor model in \eqref{model} and the IBP prior in \eqref{ibp}, the posterior distribution $\pi(\Theta, X^n)$ requires solving $\int \pi(\Theta, \bw \given X^n) d \bw$, which is intractable. Here, $\Theta$ includes all the parameters except for $\bw$.
+We introduce an expectation (E-) step similar to that in the EM algorithm. In the E-step, the latent variable $\bw$ is considered as missing data. We will derive the conditional distribution $\bw$ given $(\Theta^{(t)}, X^n)$, where $\Theta^{(t)}$ is the value of $\Theta$ from the previous (namely, $t$-th) iteration of the algorithm,
+and then calculate $\mathbb{E}_{\bw \given \Theta^{(t)}, X^n} \log \pi(\Theta, \bw \given X^n)$, which we denote this quantity $Q(\Theta|\Theta^{(t)})$ for simplicity. 
+
+
+Denote the full model posterior as $\pi(\Theta, \bw, X^n)$. By calculation, we have
+\begin{eqnarray}
+\label{eqn:cavi-w}
+    \pi(w_i \given \Theta, X^n) = \mathcal{N}(\omega_i, V_w), \ i =1, \dots, n%\end{split}
+\end{eqnarray}
+where $V_w^{-1} = \mathbb{E}_{Z \sim \hat q(Z)} (Z' \Sigma^{-1} Z) + I_K$ and 
+$w_i = V_w (\mathbb{E}_{Z \sim \hat q(Z)} Z)' \Sigma^{-1} X_i$, $\hat q(Z)$ is the mean-field variational posterior of $Z$.
+
+In view of the mean-field variational posterior defined in \eqref{eqn:MF-posterior}, 
+let $Z = (Z_{1 \cdot}, \dots, Z_{p \cdot})'$, each $Z_{j \cdot}$ is a length $K$ vector, then
+\begin{align}
+\label{second-moment}
+\mathbb{E}_{Z \sim \hat q(Z)} (Z' \Sigma^{-1} Z) 
+= \sum_{j=1}^p \mathbb{E}_{Z \sim \hat q(Z)} (Z_{j\cdot}Z_{j\cdot}') /\sigma_j^2
+:= \sum_{j=1}^p (\zeta_{j\cdot} \zeta_{j \cdot}') \circ \Phi_j/\sigma_j^2,
+\end{align}
+where $\circ$ stands for the coordinate-wise product between two matrices, $\zeta_{j \cdot} = (\zeta_{j1}, \dots \zeta_{jK})$, $\Phi_{j} \in \mathbb{R}^{K \times K}$, $\Phi_{j, kk} = u_{jk}^2 + \nu_{jk}^2$ and $\Phi_{j, k'k} = u_{jk}u_{jk'}$ for $k \neq k'$.
+In $\omega_i$, for each $(j,k)$-th element of $Z$, $\mathbb{E}_{Z \sim \hat q(Z)} Z_{jk} = \zeta_{jk} u_{jk}$.
+
+
+\subsubsection{Coordinate update equations}
+
+To obtain $\hat q(Z)$ and $\hat \theta_k$, we introduce the stick-breaking representation of the IBP prior. Let $1 \geq \theta_{(1)} > \theta_{(2)} > \cdots > \theta_{(K)} \geq 0$ be a sequence has a decreasing order, then the prior $\theta_k \given \alpha \sim \text{Beta}(\alpha/K, 1)$ admits a stick-breaking representation; i.e.,
+\begin{align}
+\label{stickbreaking-ibp}
+\theta_{(k)} = \prod_{l=1}^k v_l,
+\quad 
+v_l \stackrel{i.i.d}{\sim} \text{Beta}(\alpha, 1). 
+\end{align}
+The above stick-breaking presentation is used by \citet{rockova16} for the PXL-EM algorithm for the sparse factor analysis. Recently, \citet{ohn22} studied the sufficient conditions for consistently estimating the dimensional of latent factors of the posterior distribution using this representation under the assumption that $Z$ is jointly row sparse. 
+
+From the definition, 
+\begin{align}
+\label{cavi-Theta}
+\hat q(\Theta) = \argmax_{q(\Theta) \in \mathcal{Q}^{MF}} 
+\mathbb{E}_q \left(Q(\Theta \given \Theta^{(t)}) - \log q(\Theta)\right),
+\end{align}
+Simply calculation reveals that
+\begin{equation}
+\label{eqn:Q}
+\begin{split}
+Q(\Theta \given \Theta^{(t)})
+& = C - \frac{n}{2}\log \det(\Sigma)
+- \frac{1}{2} \sum_{i=1}^n \left[
+X_i' \Sigma^{-1} X_i 
+- 2 X_i'\Sigma^{-1} Z \omega_i
++\Tr(H_i Z' \Sigma^{-1} Z) \right] \\
+& \quad - \log D_\Pi + \log d\Pi(\Theta),
+\end{split}
+\end{equation}
+where $H_i = \omega_i \omega_i' + V_w$ and $C$ is a constant does not depend on the unknown parameters, $D_\Pi$ is the denominator of the posterior distribution and $\Pi(\Theta)$ stands for the priors for all the parameters in $\Theta$. 
+
+The CAVI algorithm solves \eqref{cavi-Theta} through iteratively solving $\hat q(Z)$, $\hat\sigma_j^2$ and $\hat{\boldsymbol \theta} = (\hat \theta_1, \dots, \hat \theta_K)$. 
+
+{\it 1) Solving $\hat q(Z)$}
+
+Assuming $q(Z) \in \mathcal{Q}^{MF}$ in \eqref{vbclass} and
+noticing that the variational posterior distribution of $Z_{jk}$ conditional on $\zeta_{jk} = 1$ is singular to the Dirac measure $\delta_0$ in the Radon-Nikodym derivative, denoted by $dP_{u_{jk}, \nu_{jk} \given \zeta_{jk} = 1}/d\Pi(Z_{jk})$, $\Pi(Z_{jk})$ the prior distribution, it is sufficient to consider only the continuous part of the prior measure in the denominator. 
+Therefore, by calculation given in the appendix, we solve each $u_{jk}$ and $\nu_{jk}$ by minimizing the equation given by
+\begin{align}
+\label{eqn:g}
+g(u_{jk}, \nu_{jk}) = - \sum_{i=1}^n \sigma_j^{-2} \textcolor{red}{X_{ij}} \zeta_{jk} u_{jk}\textcolor{red}{\omega_{ik}} + \frac{1}{2} \sum_{i=1}^n \sum_{k' = 1}^K  \sigma_j^{-2}\zeta_{jk} \zeta_{jk'} \Phi_{j, k'k} H_{i, k'k} - \frac{1}{2} \log \nu_{jk}^2 - \lambda_k \mathbb{E}|Z_{jk}|,
+\end{align}
+where $\Phi_{j, k'k}$ is in \eqref{second-moment} and
+the expectation of the last term equals to the mean of the folded norm given by
+$$
+\mathbb{E}|Z_{jk}| = \zeta_{jk} 
+\left(
+\nu_{jk} \sqrt{2/\pi} \exp(- u_{jk}^2/(2 \nu_{jk}^2))
++ u_{jk} (1 - \Phi_N(-u_{jk}/(\nu_{jk})))
+\right).
+$$
+The notation $\Phi_N(\cdot)$ in the last display stands for the cumulative distribution function (CDF) of the standard normal density.
+
+Next, from the derivation in the appendix, the mixture weight $\zeta_{jk}$ can be obtained from $h_{jk} = \zeta_{jk}/(1- \zeta_{jk})$, where $\hat h_{jk}$ is given by
+\begin{equation}
+\begin{split} 
+\label{eqn:hjk}
+\hat h_{jk} & =
+\sum_{i=1}^n \sigma_j^{-2} \textcolor{red}{X_{ij}}u_{jk} \textcolor{red}{\omega_{ik}}
+- \frac{1}{2} \sigma_j^{-2} \sum_{i=1}^n \sum_{k' = 1}^K \zeta_{jk'} \Phi_{j, k'k} H_{i, k'k} + \log \frac{\theta_k}{1-\theta_k} 
++ \frac{1}{2}  \\
+& \quad - \log \frac{\sqrt{\pi}\lambda_k \nu_{jk}}{\sqrt{2}} - \lambda_k \nu_{jk}^2 \sqrt{\frac{2}{\pi}} \exp\left(- \frac{u_{jk}^2}{2 \nu_{jk}^2} \right) - \lambda_k \left(1 - \Phi_N\left(- \frac{u_{jk}}{\nu_{jk}}\right)\right).
+\end{split}
+\end{equation}
+
+{\it 2) Solving $\theta_k$ and $\sigma_j^2$}
+
+Let $\boldsymbol \theta = (\theta_1, \dots, \theta_K)$, by maximizing the log-posterior, we obtain $\hat\theta_k = g(\theta_k).$,
+where 
+\begin{align}
+\label{eqn:theta}
+g(\boldsymbol \theta) = \sum_{j=1}^p \sum_{k=1}^{K} 
+\left[
+\zeta_{jk} \log \theta_k + (1 - \zeta_{jk}) \log (1 - \theta_{k}) + (\alpha - 1) \log \theta_{K}
+\right]
+\end{align}
+subject to $1 \geq \theta_{(k)} > \theta_{(k-1)} > \cdots > \theta_{(1)} \geq 0$.
+One can solve $\boldsymbol \theta$ by solving a linear programming problem with the constraints:
+$0 \leq \theta_{(k)} \leq 1$ for all $k$ and $\theta_{(k)} - \theta_{(k-1)} \leq 0$ for $k \geq 2$. As noted by \citet{rockova16}, this step can be further enhanced by performing a permutation of the column based on the corresponding $\theta_{(k)}$ value to solve the constrained problem. This order constraint intrinsically leads to shrinkage of higher-index of factor loadings. 
+
+Last, we solve $\sigma_j^2$ from
+\begin{align}
+\label{eqn:sigma}
+\hat \sigma_j^2 = \frac{
+\sum_{i=1}^n \left( X_{ij}^2 - 2 \sum_{k=1}^K X_{ij} \zeta_{jk} u_{jk} w_{ik} 
++ \sum_{k=1}^K \sum_{k' = 1}^K \zeta_{jk} \zeta_{jk'} \Phi_{j,kk'} H_{i, kk'}\right) + 2b 
+}{n + 2a + 2}.
+\end{align}
+The derivation of the last display can be found in the appendix. 
+
+\subsection{Parameter expansion and the PXL-CAVI algorithm}
+
+We apply parameter expansion to increase the convergence speed of the original CAVI algorithm. 
+The parameter expansion strategy was first introduced by \citet{liu98} and recently adopted by \citet{rockova16} in the PXL-EM algorithm for a Bayesian sparse factor analysis. 
+Introducing a positive definite matrix $D$ and define $\tilde Z = Z D_L^{-1}$, $D_L$ is the lower triangular part from the Cholesky decomposition, then the likelihood function can be re-written as 
+$$
+X_i = \tilde Z \tilde w_i + \epsilon_i, 
+$$
+where $\tilde w_i \sim \mathcal{N}(0, D)$. 
+
+We put the SS-IBP prior on $\tilde Z$ instead of $Z$. Unless $D$ is a diagonal matrix, the support of $Z$ is not the same as the support of $\tilde Z$. However, the number of non-zero factor loadings of $Z$ and $\tilde Z$ will be the same. 
+The next steps are similar to the original CAVI algorithm. We replace $u_{jk}$ and $\nu_{jk}$ with \eqref{eqn:g}-\eqref{eqn:sigma} respectively. 
+
+%After obtaining $\hat q(Z)$, $\hat \theta_k$, and $\hat \sigma_j$, we estimate $\hat D = \frac{1}{n} \sum_{i=1}^n \omega_i \omega_i' + H_w$ and obtain $u = \tilde u D_L^{-1}$ and $\\Xi_j = D_L^{-1}  \tilde \Xi_j {D_L^{-1}}'$.  
+
+%Note that due to we assume $\theta$ is jointly row-sparse, the support of $\beta$ and it of $\tilde \beta$ are the same. Thus $z_j$ in (\ref{eqn:tildebeta}) is the same as it in (\ref{eqn:MF-posterior}).
+%However, this relation no longer holds if $\theta$ is not jointly row-sparsity. 
+
+\subsection{Joint row-sparsity on $Z$} 
+
+The joint row-sparsity is a special case that all the coordinates within each row are either all zero or all non-zero. Under this assumption, the support of $Z$ is simply $S = S_1 = \dots = S_k$. 
+
+\appendix
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Proofs of (\ref{eqn:g})-(\ref{eqn:sigma})}
+\label{derive-cavi}
+
+\begin{proof}
+We first prove \eqref{eqn:g}. 
+Let $\bu, \bnu \in \mathbb{R}^{p \times K}$, where the $(j, k)$-th coordinate in $\bu$ and $\bnu$ are $u_{jk}$ and $\nu_{jk}$ respectively. 
+Denote $P_{-jk} = P_{-\bu_{-jk}, \bnu_{-jk}, \bgamma_{-jk}}$ be the posterior of $\bu, \bnu, \bgamma$ without the $(j,k)$-th entries. A similar notation is used for the joint prior $\Pi_{-jk}$ of $\bu, \bnu, \bgamma$.
+We have
+\begin{align}
+& \mathbb{E}_{\bu, \bnu, \bgamma \given \zeta_{jk} = 1}
+\left[-Q(\Theta \given \Theta^{(t)}) + \log D_\Pi + 
+\log \frac{
+dP_{-jk} \otimes N(u_{jk}, \nu_{jk}^2)
+}{
+d\Pi_{-jk} \otimes \theta_k \text{Lap}(\lambda_k)
+}\right] + C \nonumber \\
+& \quad = - \sum_{i=1}^n \mathbb{E}_{\cdot \given \zeta_{jk}=1}(X_i'\Sigma^{-1} Z \omega_i) + 
+\Tr(H_i \mathbb{E}_{\cdot \given \zeta_{jk}=1}(Z'\Sigma^{-1} Z))
+- \frac{1}{2} \log (2\pi \nu_{jk}^2)
+\label{pf-g1} \\
+& \quad \quad 
+- \mathbb{E}_{\cdot \given \zeta_{jk}=1}\left(
+\frac{(Z_{jk} - u_{jk})^2}{2\nu_{jk}^2} 
+\right)
+- \log (\theta_k) - \log(\lambda_k/2) - \lambda_k \mathbb{E}_{\cdot \given \zeta_{jk}=1} |Z_{jk}| + C',
+\label{pf-g2}
+\end{align}
+where we denote $\mathbb{E}_{\cdot \given \zeta_{jk}=1}$ as $\mathbb{E}_{\bu, \bnu, \bgamma \given \zeta_{jk} = 1}$ for convenience. 
+From the variational posterior defined in \eqref{vbclass}, $Z_{jk}|\zeta_{jk} = 1 \sim \mathcal{N}(u_{jk},  \nu_{jk}^2)$ and thus,
+\begin{align}
+\label{g-1}
+\mathbb{E}_{\cdot \given \zeta_{jk}=1}\left(
+\frac{(Z_{jk} - u_{jk})^2}{2\nu_{jk}^2} \right) = \frac{1}{2},
+\end{align}
+as $((Z_{jk} - u_{jk})/\nu_{jk})^2$ follows the standard $\chi^2$ distribution.
+For the first two terms in \eqref{pf-g1}, we write 
+$X_i \Sigma^{-1} Z \omega_i = \sum_{j=1}^p \sum_{k=1}^K \sigma_j^{-2} X_{ij} Z_{jk} \omega_{ik}.$
+Therefore,
+\begin{align}
+\label{g-2}
+\mathbb{E}_{\cdot \given \zeta_{jk}=1}(X_i \Sigma^{-1} Z \omega_i) = \sum_{j=1}^p \sum_{k=1}^K \sigma_j^{-2} X_{ij} u_{jk} \omega_{ik}.
+\end{align}
+We can also write
+$$\Tr(H_i Z' \Sigma^{-1} Z) = \sum_{j=1}^p \sigma_j^{-2} \Tr(H_i Z_{j\cdot} Z_{j\cdot}') 
+= \sum_{j=1}^p \sum_{k=1}^K \sum_{k' = 1}^K \sigma_j^{-2} H_{i,kk'} Z_{jk}Z_{jk'}.$$
+Taking expectation on both side, we obtain 
+\begin{align}
+\label{g-3}
+\Tr(H_i \mathbb{E}_{\cdot \given \zeta_{jk}=1}(Z'\Sigma^{-1} Z)) = 
+\sum_{j=1}^p \sum_{k=1}^K \sum_{k' = 1}^K \sigma_j^{-2} \zeta_{jk} \zeta_{jk'} H_{i,kk'} \Phi_{j, kk'}.
+\end{align}
+Since the goal is to solve $u_{jk}$ and $\nu_{jk}$, other terms in the equation which do not depend on the two terms can be simply treated as constants. Therefore, by plugging \eqref{g-1}--\eqref{g-3} into \eqref{pf-g1} and \eqref{pf-g2}, we obtain the expression in \eqref{eqn:g}.
+
+
+Next, we prove \eqref{eqn:hjk}. We have
+\begin{align}
+& \mathbb{E}_{\bu, \bnu, \bgamma}
+\left[-Q(\Theta \given \Theta^{(t)}) + \log D_\Pi
++ \log \frac{
+d(\zeta_{jk} N(u_{jk}, \nu_{jk}^2) + (1 - \zeta_{jk})\delta_0)
+}{
+d(\theta_k \text{Lap}(\lambda_k) + (1-\theta_k) \delta_0)
+}\right] + C
+\nonumber \\
+& \quad = 
+ \mathbb{E}_{\bu, \bnu, \bgamma}
+ \Big[
+ - \sum_{i=1}^n X_i' \Sigma^{-1} Z w_i + \frac{1}{2}\Tr(H_iZ'\Sigma^{-1} Z) +
+ \mathbbm{1}_{\{\gamma_{jk}=1\}} 
+ \left(
+ \log \frac{\zeta_{jk} dN(u_{jk}, \nu_{jk}^2)}{\theta_k d\text{Lap}(\lambda_k)}
+ \right) \nonumber \\
+& \quad \quad + \mathbbm{1}_{\{\gamma_{jk} = 0\}} \log \frac{1 - \zeta_{jk}}{1 - \theta_k}
+ \Big] \nonumber 
+\end{align}
+Note that $ \mathbb{E}_{\bu, \bnu, \bgamma}( \mathbbm{1}_{\{\gamma_{jk}=1\}} ) = \zeta_{jk}$.
+Using \eqref{g-2} and \eqref{g-3}, the last display can be written as 
+\begin{align*}
+& \zeta_{jk} \Big\{
+- \sum_{i=1}^n \sigma_j^{-2} X_{ij} u_{jk} w_{jk} + \frac{1}{2\sigma_j^2} \sum_{i=1}^n \sum_{k'=1}^K \zeta_{jk'} H_{i,kk'} \Phi_{j,kk'} 
++ \log \frac{\zeta_{jk}}{\theta_k} - \frac{1}{2}\log (2\pi  \nu_{jk}^2) - \frac{1}{2} \\
+& \quad  - \log \frac{\lambda_k}{2} + \lambda_k\nu_{jk} \sqrt{2/\pi} \exp(- u_{jk}^2/(2 \nu_{jk}^2)) + \lambda_k u_{jk} (1 - \Phi_N(- u_{jk}/\nu_{jk}))
+\Big\}\\
+& \quad + (1 - \zeta_{jk}) \log \frac{1-\zeta_{jk}}{1 - \theta_k}.
+\end{align*}
+Taking derivation with respect to $\zeta_{jk}$ and set the equation to 0, we thus obtain \eqref{eqn:hjk}.
+
+Last, we derive \eqref{eqn:theta} and \eqref{eqn:sigma}. 
+\eqref{eqn:theta} is obtained the same as in \citet{rockova16}. 
+We first express the objection function as function of $v_k$,
+$$
+g(v) = \sum_{j=1}^p \sum_{k = 1}^K \left\{ \zeta_{jk} \sum_{l=1}^k \log v_l + (1-\zeta_{jk}) \log (1 - \prod_{l=1}^k v_l) \right\}+ (\alpha - 1) \sum_{k=1}^K \log (v_k).
+$$
+Using the stick-breaking law, we have $v_k = \theta_{(k)}/\theta_{(k-1)}$. By plugging-in this expression, we obtain \eqref{eqn:theta}. 
+
+To derive \eqref{eqn:sigma}, we solve $\sigma_j^2$ by minimizing the function given by
+\begin{align*}
+& \frac{n}{2} \log \sigma_j^2 - \mathbb{E}_{\bu, \bnu, \bgamma} Q(\Theta \given \Theta^{(t)}) - \log \pi(\sigma^{2})\\
+& \quad 
+= C + \frac{n}{2} \log \sigma_j^2  + \frac{1}{2\sigma_j^2} \sum_{i=1}^n X_{ij}^2 
+- \frac{1}{\sigma_j^{2}} \sum_{i=1}^n \sum_{k=1}^K X_{ij} \zeta_{jk} u_{jk} w_{ik} \\
+& \quad \quad
+- \frac{1}{2\sigma_j^{2}} \sum_{i=1}^n \sum_{k=1}^K \sum_{k' = 1}^K \zeta_{jk} \zeta_{jk'} \Phi_{j,kk'} H_{i, kk'}
++ (a + 1) \log \sigma_j^2 +\frac{b}{\sigma_j^2}.
+\end{align*}
+Taking derivative with respect to $\sigma_j^2$, we obtain \eqref{eqn:sigma}.
+
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%% Bibliography %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{chicago}
+\bibliography{citation.bib}
+
+\end{document}
