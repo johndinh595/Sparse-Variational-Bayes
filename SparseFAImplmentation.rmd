@@ -1,0 +1,308 @@
+---
+title: "R Notebook"
+author: 'John Dinh'
+output: html_notebook
+---
+
+```{r}
+library(MASS)
+library(invgamma)
+
+#Data Generation Process
+### SOURCE: http://veronikarock.com/rotation.pdf
+library(mvtnorm)
+set.seed(82522)
+p<-203	# Number of responses 	
+n <- 100 #number of observations
+K <-3  # True number of factors
+
+# TRUE LOADING MATRIX
+Z<-matrix(0,p,K)
+length=75
+offset=10
+end<-1
+
+for(i in (1:K)){
+	start<-end-(i!=1)*offset
+	#print(start)
+	end<-start+length-1
+	#print(end)
+	Z[start:end,i]<-1
+}
+
+# TRUE COVARIANCE MATRIX
+Sigma<-Z%*%t(Z)+diag(p)
+
+# GENERATE DATA
+X_obs<-rmvnorm(n,numeric(p),Sigma)
+
+X_obs
+
+```
+
+```{r}
+set.seed(422)
+#initialize mu and eta
+#mu_matrix<- matrix(runif(n = p*k, min = -100, max  = 100), nrow = p, ncol = K)
+mu_matrix <- matrix(rnorm(p*K), nrow = p, ncol = K)
+eta_matrix <- matrix(runif(n = p*K, min = 0 , max = 100), nrow = p, ncol = K)
+
+#initial zeta(weights) matrix
+zeta_matrix<- matrix(rbinom(n = p*K, size = 1, prob = .5), nrow = p, ncol = K)
+
+#initial sigmas
+sigma_values <- rep.int(x = 1, times = p)
+
+#initialize thetas
+theta_values <-c(rep.int(x = .5, times = K))
+
+#initialize lambda in laplace slab
+lambda_values <- seq(from = .01, to = .01, length.out = K)
+```
+
+
+```{r}
+#First Moment of Z  
+
+E_Z <- function(mu_matrix, zeta_matrix){
+  if(identical(dim(zeta_matrix), dim(mu_matrix))){
+    return(zeta_matrix*mu_matrix)
+  }
+  
+  else{
+    print('Incorrect dimensions')
+  }
+  
+}
+
+#Second Moment of Z
+E_ZZT <- function(zeta_matrix, mu_matrix, eta_matrix, sigma_values){
+  #calculating diagonal values of the phi matrix
+  diag_values <- mu_matrix**2 + eta_matrix**2
+  #initializing empty matricies 
+  phi_matrix <- matrix(data = NA, nrow = K, ncol = K)
+  E_ZZT <- matrix(0, nrow = K, ncol = K)
+  for (j in 1:p){
+    
+    for (k in 1:K){
+      
+      #phi_matrix off diagonal calculations
+      phi_matrix[k, ] <- mu_matrix[j, ]*mu_matrix[j, k]
+    }
+    #changing diagonal of phi_matrix
+    diag(phi_matrix) <- diag_values[j,]
+    temp <- (zeta_matrix[j,] %*% t(zeta_matrix[j,])) * (phi_matrix/sigma_values[j])
+    E_ZZT <- temp + E_ZZT
+  }
+
+return(E_ZZT)
+  
+}
+
+#Folded Norm Expectation 
+E_folded_Z <- function(zeta_matrix, eta_matrix, mu_matrix){
+  exp_matrix <- zeta_matrix*(eta_matrix*sqrt(2/pi)*exp(-mu_matrix**2/(2*eta_matrix**2)) +mu_matrix*(1-pnorm(-mu_matrix/eta_matrix)))
+  return(exp_matrix)
+}
+
+```
+
+```{r}
+#separated phi matrix 
+diag_values <- mu_matrix**2 + eta_matrix**2
+phi_list <- list()
+
+for (j in 1:p){
+  phi_matrix <- matrix(data = NA, nrow = K, ncol = K)
+    
+    for (k in 1:K){
+      
+      #phi_matrix off diagonal calculations
+      phi_matrix[k, ] <- mu_matrix[j, ]*mu_matrix[j, k]
+    }
+    #changing diagonal of phi_matrix
+    diag(phi_matrix) <- diag_values[j,]
+  
+  phi_list[[j]] <- phi_matrix
+}
+```
+
+```{r}
+##variance of posterior, V_w
+Vw <-  solve(E_ZZT(zeta_matrix, mu_matrix, eta_matrix, sigma_values) + diag(k))
+w <- matrix(data = 0, nrow = n, ncol = K)
+#mean of the posterior 
+wi_help <- Vw %*% t(E_Z(zeta = zeta_matrix, mu = mu_matrix )) %*% solve(diag(x = sigma_values))
+for (i in 1:n){
+  w[i, ] <-  wi_help %*% X_obs[i, ]
+}
+
+#calculating H
+H <- list()
+for (i in 1:n){
+  hold <- w[i, ] %*% t(w[i,]) + Vw
+  H[[i]] <- hold
+}
+
+```
+
+
+```{r}
+### equation (14)
+g_mu<- function(mu_value){
+     -sigma_values[j]**(-2)*sum(X_obs[, j])*zeta_matrix[j, k]*mu_value*sum(w[, k]) + .5*sigma_values[j]**(-2)*(zeta_matrix[j,k])*(2*(sum(zeta_matrix[j,])-zeta_matrix[j,k]))*(2*(sum(phi_list[[j]][,k])-phi_list[[j]][k,k]))*(2*(sum(H[[i]][,k]) - H[[i]][k,k]))-.5*log(eta_matrix[j,k]**2) - lambda_values[k]*folded_exp[j,k]
+}
+
+g_eta<- function(eta_value){
+     -sigma_values[j]**(-2)*sum(X_obs[, j])*zeta_matrix[j, k]*updated_mu[j,k]*sum(w[, k]) + .5*sigma_values[j]**(-2)*(zeta_matrix[j,k])*(2*(sum(zeta_matrix[j,])-zeta_matrix[j,k]))*(2*(sum(phi_list[[j]][,k])-phi_list[[j]][k,k]))*(2*(sum(H[[i]][,k]) - H[[i]][k,k]))-.5*log(eta_value**2) - lambda_values[k]*folded_exp[j,k]
+}
+
+```
+
+```{r}
+#solving for mu_jk
+updated_mu<- matrix(data = 0, nrow = p, ncol = K)
+folded_exp <- E_folded_Z(zeta_matrix, eta_matrix, mu_matrix)
+for (j in 1:p){
+  for (k in 1:K){
+    for (i in 1:n){
+      optimization_results <- optim(par = 1, g_mu, method = 'L-BFGS-B', lower = -Inf, upper = Inf)
+      if(optimization_results$convergence == 0){
+        updated_mu[j,k] <- optimization_results$par
+      }
+      else{
+       updated_mu[j,k] <- 0
+      }
+      
+    }
+    
+  }
+}
+
+
+```
+
+```{r}
+#solving for eta_jk
+updated_eta<- matrix(data = 0, nrow = p, ncol = K)
+for (j in 1:p){
+  for (k in 1:K){
+    for (i in 1:n){
+      optimization_results <- optim(par = 100, g_eta, method = 'L-BFGS-B', lower = -Inf, upper = Inf)
+      if(optimization_results$convergence == 0){
+        updated_eta[j,k] <- optimization_results$par
+      }
+      else{
+        print('STOP') 
+      }
+      
+    }
+    
+  }
+}
+```
+
+
+```{r}
+#Solving for mixture weights
+mweights_h <- matrix(data = NA, nrow = p, ncol = K)
+for (j in 1:p){
+  for(k in 1:K){
+    for (i in 1:n){
+    mweights_h[j,k] <- sigma_values[j]**(-2)*sum(X_obs[, j])*updated_mu[j,k]*sum(w[, k]) - .5*sigma_values[j]**(-2)*(1*(sum(zeta_matrix[j,])-zeta_matrix[j,k]))*(1*(sum(phi_list[[j]][k,])-phi_list[[j]][k,k]))*(2*(sum(H[[i]][k,])-H[[i]][k,k])) + log(theta_values[k]/(1-theta_values[k])) + .5 -log(sqrt(pi)*lambda_values[k]*updated_eta[j,k]/sqrt(2))-lambda_values[k]*updated_eta[j,k]**(2)*sqrt(2/pi)*exp(-updated_mu[j,k]**2/(2*updated_eta[j,k]**2))-lambda_values[k]*(1-pnorm(-updated_mu[j,k]/updated_eta[j,k]))
+    }
+  }
+}
+updated_zeta <- matrix(data = NA, nrow = p , ncol = K)
+updated_zeta <- mweights_h/(1+mweights_h) 
+```
+
+
+```{r}
+#Function for Extracting Off-diagonals
+#Source:https://stackoverflow.com/questions/70488550/extracting-off-diagonal-elements-of-a-matrix-in-r
+odiag <- function(x) x[col(x) != row(x)]
+```
+
+```{r}
+#solving for thetas (WORK IN PROGRESS)
+
+#sort in decreasing order
+alpha_tuning <- 1
+theta_values <- sort(theta_values)
+
+g_theta <- function(tv){
+  sum(zeta_matrix) * log(tv)  + (1-sum(zeta_matrix))*log(1-tv) + (alpha_tuning - 1)*log(theta_values[k])
+}
+
+optim(.5 , fn = g_theta, method = 'L-BFGS-B', lower = 0.001, upper = .9999, control = list(fnscale = -1))
+
+```
+
+
+```{r Veronika M-Step}
+M_theta_NLP<-function(P_star,alpha){
+	
+	require(nloptr)
+	coefs<-apply(P_star,2,sum)
+	K<-ncol(P_star)
+	N<-nrow(P_star)
+
+    eval_jac_g<-function(x){
+	Matrix<--1*diag(K)
+	for (i in (1:K-1)){
+	Matrix[i,i+1]<-1}
+	Matrix[K,K]<-0
+	Matrix[K,1]<--1
+	return(Matrix)}
+
+
+	eval_g_ineq<-function(x){
+	text<-paste("-x[",1:(K-1),"]+x[",(2:K),"]",sep="",collapse=",")
+	text<-paste("c(",text,",-x[1])",sep="")
+	eval(parse(text=text))}
+
+
+	eval_grad_f<-function(x){
+	paste1<-paste("-coefs[",1:(K-1),"]/","x[",1:(K-1),"]","+(N-coefs[",1:(K-1),"])/","(1-x[",1:(K-1),"])",sep="",collapse=",")
+	paste2<-paste("-(alpha-1+coefs[",K,"])/","x[",K,"]","+(N-coefs[",K,"])/","(1-x[",K,"])",sep="",collapse=",")
+	text<-paste(c(paste1,paste2),collapse=",")
+	text<-paste("c(",text,")",sep="")
+	eval(parse(text=text))}
+	
+	eval_f<-function(x){
+	paste1<-paste("-coefs[",1:K,"]*","log(x[",1:K,"])",sep="",collapse="+")
+	paste2<-paste("(N-coefs[",1:K,"])*","log(1-x[",1:K,"])",sep="",collapse="-")
+	paste3<-paste("(alpha-1)*log(x[",K,"])",sep="")
+	text<-paste(c(paste1,paste2,paste3),collapse="-")
+	eval(parse(text=text))}
+
+
+ 	opts<-list("algorithm"="NLOPT_LD_MMA","check_derivatives"=F,"xtol_rel"=10^-10)
+    x0<-sort(rbeta(K,1,1),decreasing=TRUE)
+    res<-nloptr(x0=x0,eval_f=eval_f,eval_grad_f=eval_grad_f,eval_g_ineq=eval_g_ineq,
+    		eval_jac_g_ineq=eval_jac_g,
+            opts=opts,lb=rep(0,K),ub=rep(1,K))
+    res$solution
+	
+}
+```
+
+
+```{r}
+#solving for sigmas
+a <- 1
+b <- 1
+updated_sigmas <- c()
+
+for (j in 1:p){
+  updated_sigmas[j] <- (sum(X_obs[,j]**2) - 2*sum(X_obs[,j])*sum(zeta_matrix[j,])*sum(updated_mu[j, ])*sum(w) +
+    sum(odiag(mu_matrix[j,] %*% t(mu_matrix[j, ])))*sum(odiag(phi_list[[j]]))*sum(odiag(Reduce('+', H))) + 2*b)/(n + 2 + 2*a)
+}
+
+```
+
+
+
+
+
